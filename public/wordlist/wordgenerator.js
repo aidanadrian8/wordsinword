@@ -1,5 +1,5 @@
-import fullwordlist from './wordlist/fullwordlist.json'
-import goodwordlist from './wordlist/goodwordlist.json'
+import fullwordlist from './fullwordlist.json'
+import goodwordlist from './goodwordlist.json'
 
 // console.log(masterWord);
 
@@ -7,9 +7,8 @@ export function getMasterWord() {
   // let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
   // let masterWord = goodwordlist[randomnumber];
   let masterWord = "";
-
-  //this is bad
-  while(masterWord.length != 22) {
+  //this is bad but a really easy way for me to just quickly grab a specific letter length
+  while(masterWord.length < 12) {
     let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
     masterWord = goodwordlist[randomnumber];
   }
