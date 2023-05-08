@@ -10,12 +10,12 @@
       </div>
     </div>
     <div class="container text-start mt-5" style="width:400px;">
-      <small class="form-text text-muted">Your Sack:</small>
+      <small class="form-text text-muted">Your Sack Value: {{ sackValue }}</small>
     </div>
     <div class="card text-start p-2" style="width:400px; margin:auto; min-height: 40px;" >
       <div class="row">
-      <div class="col-6" v-for="word in this.sackStorage">
-         {{ word }} <span @click="removeWordFromSack(word)" class="btn btn-light btn-sm float-end">X</span></div>
+      <div class="col-6 mb-1 sackWord" v-for="word in this.sackStorage" :key="word">
+         {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)" class="btn btn-light btn-sm float-end">X</span></div>
         </div>
     </div>
     <button class="btn mt-2 mb-5" style="width:400px">
@@ -38,7 +38,8 @@ export default {
       masterHeading: null,
       currentTyped: null,
       sackStorage: [],
-      sackDisplay: null
+      sackDisplay: null,
+      sackValue: 0
     }
   },
   watch: {
@@ -57,6 +58,17 @@ export default {
     this.masterHeading = this.masterWord;
   },
   methods: {
+    getWordValue(word) {
+
+      return wordgenerator.getWordValue(word)
+    },
+    setSackValue() {
+      let accumulator = 0;
+      for(let word of this.sackStorage) {
+        accumulator += wordgenerator.getWordValue(word)
+      }
+      this.sackValue = accumulator;
+    },
     letterReader(inputText) {
       let tempList = this.masterWord.split("");
       for (let letter of inputText) {
@@ -93,6 +105,7 @@ export default {
       if (valid) {
 
         this.addWordToSack(this.currentTyped);
+        this.setSackValue();
         this.currentTyped = ""
       }
       else {
@@ -104,12 +117,15 @@ export default {
       this.$refs.wordInput.classList.remove('shaker');
     },
     checkWord(typed_letters) {
+      console.log("first test: " + wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord, this.currentTyped))
       if (!wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord, this.currentTyped)) {
         return false;
       }
+      console.log("second test: " + wordgenerator.isValidWord(typed_letters))
       if (!wordgenerator.isValidWord(typed_letters)) {
         return false;
       }
+      console.log("third test: " + String(this.sackStorage.indexOf(typed_letters) != -1))
       if (this.sackStorage.indexOf(typed_letters) != -1) {
         return false;
       }
@@ -118,19 +134,8 @@ export default {
       // return!!wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord,this.currentTyped)&&!!wordgenerator.isValidWord(typed_letters)
     },
     addWordToSack(word) {
-      this.sackDisplay = "";
       if (this.sackStorage.indexOf(word) == -1) {
         this.sackStorage.push(word);
-      }
-
-      for (let words in this.sackStorage) {
-        if (words % 2 == 0) {
-          this.sackDisplay += `<div class="row">`
-        }
-
-        if (words % 2 != 0) {
-          this.sackDisplay += `</div>`
-        }
       }
     },
     newMasterWord() {
@@ -140,18 +145,21 @@ export default {
       this.masterHeading = this.masterWord;
       this.sackDisplay = "";
       this.sackStorage = [];
+      this.sackValue = 0
     },
     removeWordFromSack(word) {
       console.log(word)
       let index = this.sackStorage.indexOf(word);
       this.sackStorage.splice(index,1);
       console.log(this.sackStorage);
+      this.setSackValue();
     }
   }
 }
 import * as wordgenerator from '../../public/wordlist/wordgenerator';
-import WordInSack from './WordInSack.vue';
-import { createVNode, render } from 'vue';
+
+
+
 
 </script>
 <style>

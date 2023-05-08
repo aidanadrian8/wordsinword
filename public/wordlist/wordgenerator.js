@@ -1,5 +1,6 @@
-import fullwordlist from './fullwordlist.json'
-import goodwordlist from './goodwordlist.json'
+import fullwordlist from './attempt1.json'
+import goodwordlist from './valuedMasterWords.json'
+
 
 // console.log(masterWord);
 
@@ -10,12 +11,22 @@ export function getMasterWord() {
   //this is bad but a really easy way for me to just quickly grab a specific letter length
   while(masterWord.length < 12) {
     let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
-    masterWord = goodwordlist[randomnumber];
+    masterWord = goodwordlist[randomnumber].wordName;
   }
   return masterWord;
 }
 
-export function isValidWord(i) { return -1 != fullwordlist.indexOf(i) }
+export function isValidWord(i) { 
+  console.log(fullwordlist.findIndex(x => x.wordName === i))
+  return -1 != fullwordlist.findIndex(x => x.wordName === i)
+ }
+
+export function getWordValue(i) {
+  let index = fullwordlist.findIndex(x => x.wordName === i);
+
+  console.log(fullwordlist[index])
+  return fullwordlist[index].wordValue
+}
 
 export function canFormWordUsingLettersFromFirstWord(word1, word2) {
   // Create an object to keep track of the count of each letter in word1
@@ -37,8 +48,8 @@ export function canFormWordUsingLettersFromFirstWord(word1, word2) {
 export function getWordListFromMaster(masterWord) {
   let wordsThatCanBeCreated = [];
   for (let word of fullwordlist) {
-    if (canFormWordUsingLettersFromFirstWord(masterWord, word) && word != masterWord) {
-      wordsThatCanBeCreated.push(word);
+    if (canFormWordUsingLettersFromFirstWord(masterWord, word.wordName) && word != masterWord) {
+      wordsThatCanBeCreated.push(word.wordName);
     }
   }
   return wordsThatCanBeCreated;
