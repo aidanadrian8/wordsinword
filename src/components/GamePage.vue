@@ -33,7 +33,7 @@
     <div class="container mt-5" style="width:400px">
       <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-secondary" @click="newMasterWord">New Word</button>
-        <button type="button" class="btn btn-secondary" @click="showModal">Show Stats</button>
+        <button type="button" class="btn btn-secondary">Show Stats</button>
       </div>
     </div>
   </div>
@@ -210,7 +210,7 @@ export default {
     submitSack() {
       if(this.progressBarValue > 75){
       // console.log("Your Sack Value: " + this.sackValue + " Your grade: " + ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%" ) + " Best Possible Score: " + wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)));
-      this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%";
+      this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100);
       this.showModal()
       // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
     }
