@@ -6,19 +6,28 @@
     <div style="width:400px; margin:auto;">
       <div class="form-group">
         <input type="text" ref="wordInput" v-model="currentTyped" onkeydown="return /[a-z]/i.test(event.key)"
-          @keyup.enter="onPressEnter" class="form-control" placeholder="Make a word from the word above!">
+          @keyup.enter="onPressEnter" class="form-control" placeholder="Make a word from the word above!" autofocus>
       </div>
     </div>
-    <div class="container text-start mt-5" style="width:400px;">
-      <small class="form-text text-muted">Your Sack Value: {{ sackValue }}</small>
+    <div class="text-start ms-auto me-auto mt-5" style="width:400px;">
+      <small class="form-text text-muted float-start">Your Sack Value: {{ sackValue }} </small>
+      <small class="form-text text-muted float-end">
+        Letters Left: {{ this.sackWeightLimit - (this.calculateSackWeight() + this.currentTyped.length) }}
+      </small>
+      <div class="progress mb-3" style="clear:both;">
+        <div ref="progressBar" class="progress-bar" role="progressbar" v-bind:style="{ width: progressBarValue + '%' }"
+          v-bind:aria-valuenow="progressBarValue" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+
     </div>
-    <div class="card text-start p-2" style="width:400px; margin:auto; min-height: 40px;" >
-      <div class="row">
-      <div class="col-6 mb-1 sackWord" v-for="word in this.sackStorage" :key="word">
-         {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)" class="btn btn-light btn-sm float-end">X</span></div>
-        </div>
+    <div class="card text-start p-2" style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+      <div class="row" style="overflow-y: scroll;">
+        <div class="col-6 mb-1 sackWord" v-for="word in this.sackStorage" :key="word">
+          {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)"
+            class="btn btn-light btn-sm float-end">X</span></div>
+      </div>
     </div>
-    <button class="btn mt-2 mb-5" style="width:400px">
+    <button class="btn mt-2 mb-5" style="width:400px" @click="submitSack">
       Submit Sack
     </button>
     <div class="container mt-5" style="width:400px">
@@ -39,7 +48,10 @@ export default {
       currentTyped: null,
       sackStorage: [],
       sackDisplay: null,
-      sackValue: 0
+      sackValue: 0,
+      gameMode: 0, //0:Limited Sack 1: Unlimited Sack
+      progressBarValue: 0,
+      sackWeightLimit: 50
     }
   },
   watch: {
@@ -49,13 +61,7 @@ export default {
     }
   },
   created() {
-    if (this.masterWord == null) {
-      this.masterWord = wordgenerator.getMasterWord();
-    }
-    let possibleWordList = wordgenerator.getWordListFromMaster(this.masterWord);
-    console.log(possibleWordList)
-
-    this.masterHeading = this.masterWord;
+    this.newMasterWord();
   },
   methods: {
     getWordValue(word) {
@@ -64,7 +70,7 @@ export default {
     },
     setSackValue() {
       let accumulator = 0;
-      for(let word of this.sackStorage) {
+      for (let word of this.sackStorage) {
         accumulator += wordgenerator.getWordValue(word)
       }
       this.sackValue = accumulator;
@@ -99,8 +105,7 @@ export default {
       this.masterHeading = tempWord;
     },
     onPressEnter() {
-      this.$refs.wordInput.classList.remove('shaker');
-      console.log("enter pressed")
+      this.removeShaker();
       let valid = this.checkWord(this.currentTyped);
       if (valid) {
 
@@ -109,24 +114,35 @@ export default {
         this.currentTyped = ""
       }
       else {
-        this.$refs.wordInput.classList.add('shaker');
-        setTimeout(this.removeShaker, 100);
+        this.shakeInput();
       }
+    },
+    shakeInput() { //this needs to be used in conjunction with 
+      this.$refs.wordInput.classList.add('shaker');
+      setTimeout(this.removeShaker, 100);
     },
     removeShaker() {
       this.$refs.wordInput.classList.remove('shaker');
     },
     checkWord(typed_letters) {
-      console.log("first test: " + wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord, this.currentTyped))
+      // console.log("word can be made from word: " + wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord, this.currentTyped))
       if (!wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord, this.currentTyped)) {
         return false;
       }
-      console.log("second test: " + wordgenerator.isValidWord(typed_letters))
+      // console.log("word is word: " + wordgenerator.isValidWord(typed_letters))
       if (!wordgenerator.isValidWord(typed_letters)) {
         return false;
       }
-      console.log("third test: " + String(this.sackStorage.indexOf(typed_letters) != -1))
+      // console.log("word is already in sack test: " + String(this.sackStorage.indexOf(typed_letters) != -1))
       if (this.sackStorage.indexOf(typed_letters) != -1) {
+        return false;
+      }
+      // console.log("word overfills sack fourth test: " + String(this.calculateSackWeight() + typed_letters.length / this.sackWeightLimit > 1));//shit I need to check if it will be over
+      // console.log("sackweight + typed_letters.length: " + Number(this.calculateSackWeight() + typed_letters.length))
+      if ((Number(this.calculateSackWeight()) + Number(typed_letters.length)) / this.sackWeightLimit > 1) {
+        return false;
+      }
+      if(typed_letters == this.masterWord){
         return false;
       }
       return true;
@@ -134,25 +150,49 @@ export default {
       // return!!wordgenerator.canFormWordUsingLettersFromFirstWord(this.masterWord,this.currentTyped)&&!!wordgenerator.isValidWord(typed_letters)
     },
     addWordToSack(word) {
-      if (this.sackStorage.indexOf(word) == -1) {
-        this.sackStorage.push(word);
+      this.sackStorage.push(word);
+      this.progressBarValue = (this.calculateSackWeight() / this.sackWeightLimit) * 100;
+      if(this.progressBarValue > 75){
+        this.$refs.progressBar.classList.add('bg-success')
       }
+      
+    },
+    calculateSackWeight() {
+      let accumulator = 0;
+      for (let word of this.sackStorage) {
+        accumulator += word.length;
+      }
+      return accumulator;
     },
     newMasterWord() {
       this.masterWord = wordgenerator.getMasterWord();
-      let possibleWordList = wordgenerator.getWordListFromMaster(this.masterWord);
-      console.log(possibleWordList)
+      // let possibleWordList = wordgenerator.getWordListFromMaster(this.masterWord);
+      // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, possibleWordList));
       this.masterHeading = this.masterWord;
       this.sackDisplay = "";
       this.sackStorage = [];
       this.sackValue = 0
+      this.currentTyped = ""
+      this.progressBarValue = 0
+      if(this.$refs.progressBar){
+        this.$refs.progressBar.classList.remove('bg-success')
+      }
+
     },
     removeWordFromSack(word) {
-      console.log(word)
       let index = this.sackStorage.indexOf(word);
-      this.sackStorage.splice(index,1);
-      console.log(this.sackStorage);
+      this.sackStorage.splice(index, 1);
       this.setSackValue();
+      this.progressBarValue = (this.calculateSackWeight() / this.sackWeightLimit) * 100;
+      if(this.progressBarValue < 75){
+        this.$refs.progressBar.classList.remove('bg-success')
+      }
+    },
+    submitSack() {
+      if(this.progressBarValue > 75){
+      console.log("Your Sack Value: " + this.sackValue + " Your grade: " + ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%" ) + " Best Possible Score: " + wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord))) + " Best List: "}
+      console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
+
     }
   }
 }
