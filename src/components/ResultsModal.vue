@@ -25,35 +25,68 @@
                     </tbody>
                 </table>
 
-
-                <div class="accordion" id="accordionExample">
+                <div class="accordion mb-2" id="yourSack">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button text-dark" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Best Sack Contents:
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button text-dark collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Your Sack:
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample">
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                            data-bs-parent="#yourSack">
                             <div class="accordion-body">
                                 <div class="card text-start p-2"
                                     style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
                                     <div class="row" style="overflow-y: scroll;">
-                                        <div class="col-6 mb-1 sackWord" v-for="word in this.bestSack" :key="word">
-                                            {{ word.wordName }} - {{ word.wordValue }}</div>
+                                        <div class="col-6 mb-1 sackWord" v-for="word in this.userSack" :key="word">
+                                            {{ word }} - {{ this.getUserWordValue(word) }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="accordion" id="bestSack">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button text-dark collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Best Sack:
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                            data-bs-parent="#bestSack">
+                            <div class="accordion-body">
+                                <div class="card text-start p-2"
+                                    style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+                                    <div class="row" style="overflow-y: scroll;">
+                                        <div class="col-6 mb-1 sackWord" v-for="word in this.bestSack" :key="word">
+                                            <div class="light-highlight" v-if="inSack(word.wordName)">
+                                                {{ word.wordName }} - {{ word.wordValue }}
+                                            </div>
+                                            <div class="" v-else>{{ word.wordName }} - {{ word.wordValue }}</div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </section>
             <footer class="myModal-footer">
-                You probably sucked
-                <button type="button" class="btn" @click="close">
-                    Try Again?
-                </button>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn" @click="close">
+                        Try Again?
+                    </button>
+                    <button type="button" class="btn" @click="closeAndSubmit">
+                        Submit Score
+                    </button>
+                </div>
+
             </footer>
         </div>
     </div>
@@ -70,17 +103,32 @@ export default {
         userPercentage: Number,
     },
     methods: {
+        getUserWordValue(word) {
+            return getWordValue(word);
+        },
+        inSack(word) {
+            return this.userSack.indexOf(word) != -1;
+        },
         close() {
             this.$emit('close');
+        },
+        closeAndSubmit() {
+            this.$emit('submit');
         },
         roundPercentage(number) {
             return Math.round(number * 100) / 100
         }
     },
 };
+import { getWordValue } from '../../public/wordlist/wordgenerator';
+
 
 </script>
 <style>
+.light-highlight {
+    font-weight: bold;
+}
+
 .myModal-backdrop {
     position: fixed;
     top: 0;

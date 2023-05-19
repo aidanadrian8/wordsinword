@@ -37,7 +37,7 @@
       </div>
     </div>
   </div>
-  <ResultsModal v-show="showResultsModal" @close="closeModal" :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue" :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
+  <ResultsModal v-show="showResultsModal" @submit="submitAndCloseModal" @close="closeModal" :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue" :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
 </template>
 <script>
 export default {
@@ -73,6 +73,10 @@ export default {
       this.newMasterWord();
     },
   methods: {
+    submitAndCloseModal() { // this is where the logic will be for submitting game data
+      this.closeModal();
+      this.newMasterWord();
+    },
     showModal(){
       this.showResultsModal = true;
     },
