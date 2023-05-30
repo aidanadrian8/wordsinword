@@ -52,7 +52,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button text-dark collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" @click="openedBestSack">
                                 Best Sack:
                             </button>
                         </h2>
@@ -94,6 +94,11 @@
 <script>
 export default {
     name: 'myModal',
+    data(){
+        return {
+            allowRetry: true,
+        }
+    },
     props: {
         masterWord: String,
         bestSack: Array,
@@ -103,6 +108,9 @@ export default {
         userPercentage: Number,
     },
     methods: {
+        openedBestSack() {
+            this.allowRetry = false;
+        },
         getUserWordValue(word) {
             return getWordValue(word);
         },
@@ -110,13 +118,19 @@ export default {
             return this.userSack.indexOf(word) != -1;
         },
         close() {
-            this.$emit('close');
+            if(this.allowRetry){
+             this.$emit('close');   
+            }
+            this.showAlert();
         },
         closeAndSubmit() {
             this.$emit('submit');
         },
         roundPercentage(number) {
             return Math.round(number * 100) / 100
+        },
+        showAlert(){
+            
         }
     },
 };

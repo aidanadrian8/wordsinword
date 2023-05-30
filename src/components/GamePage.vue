@@ -37,13 +37,13 @@
       </div>
     </div>
   </div>
-  <ResultsModal v-show="showResultsModal" @submit="submitAndCloseModal" @close="closeModal" :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue" :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
+  <ResultsModal v-show="ResultsModalVisible" @submit="submitAndCloseResultsModal" @close="closeResultsModal" :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue" :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
 </template>
 <script>
 export default {
   name: "GamePage",
   components: {
-    ResultsModal
+    ResultsModal,
   },
   data() {
     return {
@@ -56,7 +56,8 @@ export default {
       gameMode: 0, //0:Limited Sack 1: Unlimited Sack
       progressBarValue: 0,
       sackWeightLimit: 50,
-      showResultsModal: false,
+      ResultsModalVisible: false,
+      UserStatsModalVisible: false,
       bestSackScore: null,
       bestSack: [],
       possibleWordList: [],
@@ -73,15 +74,15 @@ export default {
       this.newMasterWord();
     },
   methods: {
-    submitAndCloseModal() { // this is where the logic will be for submitting game data
-      this.closeModal();
+    submitAndCloseResultsModal() { // this is where the logic will be for submitting game data
+      this.closeResultsModal();
       this.newMasterWord();
     },
-    showModal(){
-      this.showResultsModal = true;
+    showResultsModal(){
+      this.ResultsModalVisible = true;
     },
-    closeModal(){
-      this.showResultsModal = false;
+    closeResultsModal(){
+      this.ResultsModalVisible = false;
     },
     getWordValue(word) {
 
@@ -215,7 +216,7 @@ export default {
       if(this.progressBarValue > 75){
       // console.log("Your Sack Value: " + this.sackValue + " Your grade: " + ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%" ) + " Best Possible Score: " + wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)));
       this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100);
-      this.showModal()
+      this.showResultsModal()
       // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
     }
       
@@ -225,8 +226,6 @@ export default {
 }
 import * as wordgenerator from '../../public/wordlist/wordgenerator';
 import ResultsModal from './ResultsModal.vue';
-
-
 </script>
 <style>
 html {

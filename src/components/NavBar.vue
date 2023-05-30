@@ -4,11 +4,11 @@
         <li class="nav-item dropdown-end" style="list-style:none;">
           <a class="navbar-brand btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">WordSack</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Log In</a></li>
+            <li><a class="dropdown-item" @click="showSignInModal">Log In</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item" href="#">Sign Up</a></li>
+            <li><a class="dropdown-item" @click="showSignUpModal">Sign Up</a></li>
           </ul>
         </li>
       <button class="navbar-toggler btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -29,18 +29,41 @@
       </div>
     </div>
   </nav>
+  <SignInModal v-show="SignInModalVisible" @close="closeSignInModal" @showSignUp="showSignUpModal"/>
+  <SignUpModal v-show="SignUpModalVisible" @close="closeSignUpModal" @showSignIn="showSignInModal"/>
 </template>
 <script>
 import ToolTip from './ToolTip.vue';
+import SignInModal from './SignInModal.vue';
+import SignUpModal from './SignUpModal.vue';
 export default {
   name: "NavBar",
   components: {
-    ToolTip
+    ToolTip,
+    SignInModal,
+    SignUpModal
   },
   data() {
     return {
-
+      SignInModalVisible: false,
+      SignUpModalVisible: false,
     }
+  },
+  methods: {
+    showSignInModal() {
+      this.SignUpModalVisible = false;
+      this.SignInModalVisible = true;
+    },
+    closeSignInModal(){
+      this.SignInModalVisible = false;
+    },
+    showSignUpModal(){
+      this.SignInModalVisible = false;
+      this.SignUpModalVisible = true;
+    },
+    closeSignUpModal(){
+      this.SignUpModalVisible = false;
+    },
   }
 
 }
