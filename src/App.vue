@@ -1,6 +1,6 @@
 <template>
-  <NavBar />
-  <GamePage />
+  <NavBar @wordLength="setWordLength"/>
+  <GamePage :wordLength="this.wordLength"/>
 </template>
 
 <script>
@@ -15,11 +15,13 @@ export default {
   },
   data() {
     return {
-
+      wordLength: 12
     }
   },
   methods: {
-
+    setWordLength(value){
+      this.wordLength = value;
+    }
   }
 }
 </script>

@@ -39,11 +39,13 @@
                     </table>
                 </div>
                 <div v-else>
-                    <p class="m-auto">Please log in to view user stats!</p>
+                    <p class="m-auto mb-3">Please log in to view user stats!</p>
                 </div>
             </section>
-            <footer class="myModal-footer">
-
+            <footer class="myModal-footer" v-show="isLoggedIn">
+                <button @click="copyText()" class="btn" v-clipboard="clipBoardString">
+                    Copy Stats To Clipboard
+                </button>
             </footer>
         </div>
     </div>
@@ -55,7 +57,7 @@ export default {
     name: 'UserStatsModal',
     data() {
         return {
-
+            clipBoardString: ""
         }
     },
     computed: {
@@ -64,6 +66,29 @@ export default {
     methods: {
         close() {
             this.$emit('close')
+        },
+        copyText() {
+            this.clipBoardString = `${this.getEmoji(this.getAverageScore)} Average Score: ${this.getAverageScore}, Best Score: ${this.getBestScore} ${this.getEmoji(this.getBestScore)}, Games Played: ${this.getGamesPlayed} ${this.getEmoji(this.getAverageScore)}`
+            this.$toast.info("Stats copied to clipboard!")
+        },
+        getEmoji(score) {
+            let emoji = ""
+            if (score > 80) {
+                emoji = '\u{2B50}';
+            }
+            else if (score > 60) {
+                emoji = '\u{1F44D}';
+            }
+            else if (score > 40) {
+                emoji = '\u{1F44C}';
+            }
+            else {
+                emoji = '\u{1F4A9}';
+            }
+            const codePoint = emoji.codePointAt(0)
+            console.log(emoji)
+            console.log('codePoint:', codePoint);
+            return String.fromCodePoint(codePoint);
         }
     }
 
@@ -116,7 +141,7 @@ export default {
 
 .myModal-body {
     position: relative;
-    padding: 20px 10px;
+    padding: 20px 10px 5px;
 }
 
 .btn-green {

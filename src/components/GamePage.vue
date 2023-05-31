@@ -53,6 +53,9 @@ export default {
   computed: {
     ...mapGetters['isLoggedIn']
   },
+  props: {
+    wordLength: Number
+  },
   data() {
     return {
       masterWord: null,
@@ -205,7 +208,7 @@ export default {
       return accumulator;
     },
     newMasterWord() {
-      this.masterWord = wordgenerator.getMasterWord();
+      this.masterWord = wordgenerator.getMasterWord(this.wordLength);
       // let possibleWordList = wordgenerator.getWordListFromMaster(this.masterWord);
       // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, possibleWordList));
       this.masterHeading = this.masterWord;

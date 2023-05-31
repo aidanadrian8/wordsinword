@@ -126,24 +126,24 @@ export default {
     getEmoji() {
       let emoji = "";
       if (this.userPercentage > 80) {
-        emoji = '\u{1F7E9}';
+        emoji = '\u{2B50}';
       }
       else if (this.userPercentage > 70) {
-        emoji = '\u{1F7E8}';
+        emoji = '\u{1F44D}';
       }
       else if (this.userPercentage > 60) {
-        emoji = '\u{1F7E7}';
+        emoji = '\u{1F44C}';
       }
       else {
-        emoji = '\u{1F7E5}';
+        emoji = '\u{1F4A9}';
       }
-      const codePoint = emoji.codePointAt(0)
-      console.log(emoji)
-      console.log('codePoint:', codePoint);
+      const codePoint = emoji.codePointAt(0);
       return String.fromCodePoint(codePoint);
     },
     openedBestSack() {
       this.allowRetry = false;
+      this.$toast.clear();
+      this.$toast.warning("No retries!")
     },
     getUserWordValue(word) {
       return getWordValue(word);
@@ -155,7 +155,10 @@ export default {
       if (this.allowRetry) {
         this.$emit('close');
       }
-      this.showAlert();
+      else{
+        this.showAlert();
+      }
+      
     },
     closeAndSubmit() {
       let data = {
@@ -187,6 +190,7 @@ export default {
       return Math.round(number * 100) / 100
     },
     showAlert() {
+      this.$toast.clear();
       this.$toast.warning("You looked at the best sack!")
     }
   },

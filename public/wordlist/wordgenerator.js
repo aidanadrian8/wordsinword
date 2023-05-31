@@ -4,12 +4,15 @@ import goodwordlist from './valuedMasterWords.json'
 
 // console.log(masterWord);
 
-export function getMasterWord() {
+export function getMasterWord(wordLength) {
+  if(wordLength == 'undefined' || wordLength == null || wordLength < 12){
+    wordLength = randomIntFromInterval(12,18);
+  }
   // let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
   // let masterWord = goodwordlist[randomnumber];
   let masterWord = "";
   //this is bad but a really easy way for me to just quickly grab a specific letter length
-  while (masterWord.length < 12) {
+  while (masterWord.length < wordLength) {
     let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
     masterWord = goodwordlist[randomnumber].wordName;
   }
@@ -104,4 +107,8 @@ export function getWordListFromMaster(masterWord) {
     }
   }
   return wordsThatCanBeCreated;
+}
+
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }

@@ -13,8 +13,12 @@
           </div>
           <div v-else>
             <li>
+              <a class="dropdown-item" @click="showOptionsModal">Options</a>
+            </li>
+            <li>
               <a class="dropdown-item" @click="logoutClicked">Log Out</a>
             </li>
+            
           </div>
         </ul>
       </li>
@@ -29,7 +33,7 @@
               position="bottom"><i class="fa-solid fa-circle-info"></i></ToolTip>
           </li>
           <li class="nav-item">
-            <ToolTip class="nav-link" position="bottom" tooltip="Help"><i class="fa-solid fa-circle-question"></i>
+            <ToolTip class="nav-link" position="bottom" tooltip="Help" @click="showHelpModal"><i class="fa-solid fa-circle-question"></i>
             </ToolTip>
           </li>
         </ul>
@@ -38,11 +42,15 @@
   </nav>
   <SignInModal v-show="SignInModalVisible" @close="closeSignInModal" @showSignUp="showSignUpModal" @signInSuccessful="signInSuccessful"/>
   <SignUpModal v-show="SignUpModalVisible" @close="closeSignUpModal" @showSignIn="showSignInModal" />
+  <HelpModal v-show="HelpModalVisible" @close="closeHelpModal"/>
+  <OptionsModal v-show="OptionsModalVisible" @close="closeOptionsModal" @setWordLength="setWordLength"/>
 </template>
 <script>
 import ToolTip from './ToolTip.vue';
 import SignInModal from './SignInModal.vue';
 import SignUpModal from './SignUpModal.vue';
+import HelpModal from './HelpModal.vue';
+import OptionsModal from './OptionsModal.vue';
 import "@/store/index.js"
 import { mapActions, mapGetters } from "vuex";
 
@@ -54,12 +62,16 @@ export default {
   components: {
     ToolTip,
     SignInModal,
-    SignUpModal
-  },
+    SignUpModal,
+    HelpModal,
+    OptionsModal
+},
   data() {
     return {
       SignInModalVisible: false,
       SignUpModalVisible: false,
+      HelpModalVisible: false,
+      OptionsModalVisible: false
     }
   },
   methods: {
@@ -79,6 +91,9 @@ export default {
     signInSuccessful() {
 
     },
+    setWordLength(value){
+      this.$emit('wordLength', value)
+    },
     showSignInModal() {
       this.SignUpModalVisible = false;
       this.SignInModalVisible = true;
@@ -93,6 +108,18 @@ export default {
     closeSignUpModal() {
       this.SignUpModalVisible = false;
     },
+    showHelpModal(){
+      this.HelpModalVisible = true;
+    },
+    closeHelpModal(){
+      this.HelpModalVisible = false;
+    },
+    showOptionsModal() {
+      this.OptionsModalVisible = true;
+    },
+    closeOptionsModal(){
+      this.OptionsModalVisible = false;
+    }
   }
 
 }
