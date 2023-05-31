@@ -18,6 +18,11 @@
                     </label>
                     <input type="password" name="password" id="password" class="form-control" required
                         v-model="signUpPassword"/>
+                        <label for="password" class="form-label">
+                        Confirm Password
+                    </label>
+                    <input type="password" name="password" id="password" class="form-control" required
+                        v-model="signUpPasswordConfirm"/>
                 </form>
             </section>
             <footer class="myModal-footer">
@@ -44,6 +49,7 @@ export default {
         return {
             signUpEmail: "",
             signUpPassword: "",
+            signUpPasswordConfirm: "",
             displaySignUpFailed: false
         }
     },
@@ -56,6 +62,10 @@ export default {
             this.$emit('showSignIn');
         },
         onSignUp(event) {
+            if(this.signUpPassword != this.signUpPasswordConfirm) {
+                this.$toast.warning("Passwords don't match");
+            }
+            else{
             event.preventDefault();
             let data = {
                 user: {
@@ -75,6 +85,7 @@ export default {
                     console.log(error)
                     this.displaySignUpFailed = true
                 })
+            }
         },
         resetData() {
             this.signUpEmail = "",
