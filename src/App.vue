@@ -12,6 +12,14 @@ export default {
   components: {
     GamePage,
     NavBar
+  },
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+
   }
 }
 </script>

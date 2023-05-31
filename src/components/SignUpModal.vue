@@ -7,54 +7,85 @@
                 </button>
             </header>
             <section class="myModal-body">
+                <p style="color: red" v-show="displaySignUpFailed">Sign up Failed</p>
                 <form action="post" class="text-start">
                     <label for="email" class="form-label">
                         Email
                     </label>
-                    <input type="email" name="email" id="email" class="form-control"/>
+                    <input type="email" name="email" id="email" class="form-control" required v-model="signUpEmail" />
                     <label for="password" class="form-label">
                         Password
                     </label>
-                    <input type="password" name="password" id="password" class="form-control" />
+                    <input type="password" name="password" id="password" class="form-control" required
+                        v-model="signUpPassword"/>
                 </form>
             </section>
             <footer class="myModal-footer">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn" @click="signUp">
-                        Sign Up
-                    </button>
                     <button type="button" class="btn" @click="showSignIn">
                         Log In
                     </button>
+                    <button type="button" class="btn" @click="onSignUp">
+                        Sign Up
+                    </button>
+
                 </div>
             </footer>
         </div>
-    </div>  
-
+    </div>
 </template>
 <script>
+import "@/store/index.js"
+import { mapActions } from 'vuex';
+
 export default {
     name: 'SignUpModal',
     data() {
         return {
-
+            signUpEmail: "",
+            signUpPassword: "",
+            displaySignUpFailed: false
         }
     },
     methods: {
-        close(){
+        ...mapActions(["registerUser"]),
+        close() {
             this.$emit('close');
         },
-        showSignIn(){
+        showSignIn() {
             this.$emit('showSignIn');
         },
-        signUp() {
-
+        onSignUp(event) {
+            event.preventDefault();
+            let data = {
+                user: {
+                    email: this.signUpEmail,
+                    password: this.signUpPassword
+                }
+            };
+            this.$store.dispatch('registerUser', data)
+                .then(response => {
+                    console.log(response);
+                    this.$emit('signUpSuccessful');
+                    this.close();
+                    this.$toast.info("Signed Up Successfully!")
+                    this.resetData();
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.displaySignUpFailed = true
+                })
+        },
+        resetData() {
+            this.signUpEmail = "",
+                this.signUpPassword = ""
+            this.displaySignUpFailed = false
         }
 
     }
 }
 </script>
-<style>
+<style scoped>
 .light-highlight {
     font-weight: bold;
 }

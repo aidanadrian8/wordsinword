@@ -20,7 +20,8 @@
       </div>
 
     </div>
-    <div class="card text-start p-2" style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+    <div class="card text-start p-2"
+      style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
       <div class="row" style="overflow-y: scroll;">
         <div class="col-6 mb-1 sackWord" v-for="word in this.sackStorage" :key="word">
           {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)"
@@ -33,17 +34,24 @@
     <div class="container mt-5" style="width:400px">
       <div class="btn-group" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-secondary" @click="newMasterWord">New Word</button>
-        <button type="button" class="btn btn-secondary">Show Stats</button>
+        <button type="button" class="btn btn-secondary" @click="showStatsModal">Show Stats</button>
       </div>
     </div>
   </div>
-  <ResultsModal v-show="ResultsModalVisible" @submit="submitAndCloseResultsModal" @close="closeResultsModal" :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue" :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
+  <ResultsModal v-show="ResultsModalVisible" @submit="submitAndCloseResultsModal" @close="closeResultsModal"
+    :masterWord="this.masterWord" :userSack="this.sackStorage" :userSackScore="this.sackValue"
+    :userPercentage="this.userPercentage" :bestSack="this.bestSack" :bestSackScore="this.bestSackScore" />
+  <UserStatsModal v-show="UserStatsModalVisible" @close="closeStatsModal" />
 </template>
 <script>
 export default {
   name: "GamePage",
   components: {
     ResultsModal,
+    UserStatsModal
+  },
+  computed: {
+    ...mapGetters['isLoggedIn']
   },
   data() {
     return {
@@ -62,6 +70,7 @@ export default {
       bestSack: [],
       possibleWordList: [],
       userPercentage: null,
+      showedSackReadyToast: false
     }
   },
   watch: {
@@ -69,20 +78,26 @@ export default {
       this.currentTyped = this.currentTyped.toLowerCase();
       this.letterReader(this.currentTyped);
     }
-    },
-    created() {
-      this.newMasterWord();
-    },
+  },
+  created() {
+    this.newMasterWord();
+  },
   methods: {
     submitAndCloseResultsModal() { // this is where the logic will be for submitting game data
       this.closeResultsModal();
       this.newMasterWord();
     },
-    showResultsModal(){
+    showResultsModal() {
       this.ResultsModalVisible = true;
     },
-    closeResultsModal(){
+    closeResultsModal() {
       this.ResultsModalVisible = false;
+    },
+    showStatsModal() {
+      this.UserStatsModalVisible = true;
+    },
+    closeStatsModal() {
+      this.UserStatsModalVisible = false;
     },
     getWordValue(word) {
 
@@ -162,7 +177,7 @@ export default {
       if ((Number(this.calculateSackWeight()) + Number(typed_letters.length)) / this.sackWeightLimit > 1) {
         return false;
       }
-      if(typed_letters == this.masterWord){
+      if (typed_letters == this.masterWord) {
         return false;
       }
       return true;
@@ -172,10 +187,15 @@ export default {
     addWordToSack(word) {
       this.sackStorage.push(word);
       this.progressBarValue = (this.calculateSackWeight() / this.sackWeightLimit) * 100;
-      if(this.progressBarValue > 75){
+      if (this.progressBarValue > 75) {
         this.$refs.progressBar.classList.add('bg-success')
+        if (!this.showedSackReadyToast) {
+          this.$toast.success('Sack is ready for submission!')
+          this.showedSackReadyToast = true;
+        }
+
       }
-      
+
     },
     calculateSackWeight() {
       let accumulator = 0;
@@ -194,7 +214,8 @@ export default {
       this.sackValue = 0
       this.currentTyped = ""
       this.progressBarValue = 0
-      if(this.$refs.progressBar){
+      this.showedSackReadyToast = false
+      if (this.$refs.progressBar) {
         this.$refs.progressBar.classList.remove('bg-success')
       }
       this.possibleWordList = wordgenerator.getWordListFromMaster(this.masterWord)
@@ -208,24 +229,26 @@ export default {
       this.sackStorage.splice(index, 1);
       this.setSackValue();
       this.progressBarValue = (this.calculateSackWeight() / this.sackWeightLimit) * 100;
-      if(this.progressBarValue < 75){
+      if (this.progressBarValue < 75) {
         this.$refs.progressBar.classList.remove('bg-success')
       }
     },
     submitSack() {
-      if(this.progressBarValue > 75){
-      // console.log("Your Sack Value: " + this.sackValue + " Your grade: " + ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%" ) + " Best Possible Score: " + wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)));
-      this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100);
-      this.showResultsModal()
-      // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
-    }
-      
-      
+      if (this.progressBarValue > 75) {
+        // console.log("Your Sack Value: " + this.sackValue + " Your grade: " + ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100) + "%" ) + " Best Possible Score: " + wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)));
+        this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100);
+        this.showResultsModal()
+        // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
+      }
+
+
     }
   }
 }
+import { mapGetters } from 'vuex';
 import * as wordgenerator from '../../public/wordlist/wordgenerator';
 import ResultsModal from './ResultsModal.vue';
+import UserStatsModal from './UserStatsModal.vue';
 </script>
 <style>
 html {
