@@ -15,12 +15,12 @@ export default {
   },
   data() {
     return {
-      wordLength: 12
+      wordLength: "default"
     }
   },
   methods: {
     setWordLength(value){
-      this.wordLength = value;
+      this.wordLength = Number(value);
     }
   }
 }

@@ -74,6 +74,7 @@ export default {
       OptionsModalVisible: false
     }
   },
+  emits: ["wordLength"],
   methods: {
     ...mapActions(["logoutUser"]),
     logoutClicked(){

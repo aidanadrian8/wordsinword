@@ -8,8 +8,8 @@
             </header>
             <section class="myModal-body">
                 <div class="">
-                    <label for="">Set Game Mode</label>
-                    <label for="">(New Modes Coming Soon!)</label>
+                    <label for="poo">Set Game Mode</label>
+                    <label for="pee">(New Modes Coming Soon!)</label>
                     <select class="form-select" aria-label="Default select example">
                         <option value="1">Limited Sack</option>
                         <option value="2" disabled>Sack Unlimited</option>

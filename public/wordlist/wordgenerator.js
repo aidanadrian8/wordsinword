@@ -5,14 +5,14 @@ import goodwordlist from './valuedMasterWords.json'
 // console.log(masterWord);
 
 export function getMasterWord(wordLength) {
-  if(wordLength == 'undefined' || wordLength == null || wordLength < 12){
+  if(wordLength == 'undefined' || wordLength == null || wordLength == "default" ||wordLength < 10){
     wordLength = randomIntFromInterval(12,18);
   }
   // let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
   // let masterWord = goodwordlist[randomnumber];
   let masterWord = "";
   //this is bad but a really easy way for me to just quickly grab a specific letter length
-  while (masterWord.length < wordLength) {
+  while (masterWord.length < Number(wordLength)) {
     let randomnumber = Math.floor(Math.random() * (goodwordlist.length)) + 0;
     masterWord = goodwordlist[randomnumber].wordName;
   }

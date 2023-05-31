@@ -54,7 +54,7 @@ export default {
     ...mapGetters['isLoggedIn']
   },
   props: {
-    wordLength: Number
+    wordLength: String
   },
   data() {
     return {
@@ -242,6 +242,10 @@ export default {
         this.userPercentage = ((this.sackValue / wordgenerator.getBestSackValue(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))) * 100);
         this.showResultsModal()
         // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
+      }
+      else{
+        this.$toast.clear()
+        this.$toast.info("Fill up your sack some more!");
       }
 
 
