@@ -133,8 +133,16 @@
           <p class="m-2">If you can sign up, you can log in! Simply select the "WordSack" button, select the "Log In" option from the dropdown, and enter your email and password. And Happy Gaming!</p>
         </div>
 
+        <div class="section-3 text-start mt-4">
+          <h3>III. Options</h3>
+          <h5 class="mt-4 ms-1">III.I Game Modes</h5>
+          <p class="m-2">Limited Sack is the default game mode and features a sack limit on the amount of words you can create. Unlimited sack and Multiplayer are planned for the future!</p>
+          <h5 class="mt-4 ms-1">III.II Word Length</h5>
+          <p class="m-2">Set the specified word length for the master word and apply changes.</p>
+        </div>
       </section>
-      <footer class="myModal-footer">
+      <footer class="myModal-footer" style="position: relative !important; flex-direction: row !important; justify-content: space-between !important;">
+        <h4 class="mb-0">Help (End)</h4>
         <button type="button" class="btn-close mb-0" @click="close">
         </button>
       </footer>
@@ -169,7 +177,6 @@ export default {
   align-items: center;
   z-index: 100;
 }
-
 .myModal {
   border-radius: 22px;
   box-shadow: 2px 2px 20px 1px;
@@ -178,7 +185,24 @@ export default {
   flex-direction: column;
   width: 420px;
   max-height: 60%;
-  overflow: scroll;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 700px;}
+}
+
+
+.myModal::-webkit-scrollbar {
+  display: none;
+}
+.myModal {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .myModal-header,
@@ -188,7 +212,6 @@ export default {
 }
 
 .myModal-header {
-  position: relative;
   border-bottom: 1px solid #eeeeee;
   justify-content: space-between;
 }

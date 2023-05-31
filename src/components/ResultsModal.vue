@@ -37,7 +37,7 @@
               data-bs-parent="#yourSack">
               <div class="accordion-body">
                 <div class="card text-start p-2"
-                  style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+                  style="width:100%; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
                   <div class="row" style="overflow-y: scroll;">
                     <div class="col-6 mb-1 sackWord" v-for="word in this.userSack" :key="word">
                       {{ word }} - {{ this.getUserWordValue(word) }}
@@ -60,7 +60,7 @@
               data-bs-parent="#bestSack">
               <div class="accordion-body">
                 <div class="card text-start p-2"
-                  style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+                  style="width:100%; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
                   <div class="row" style="overflow-y: scroll;">
                     <div class="col-6 mb-1 sackWord" v-for="word in this.bestSack" :key="word">
                       <div class="light-highlight" v-if="inSack(word.wordName)">
@@ -113,6 +113,7 @@ export default {
     userPercentage: Number,
   },
   computed: {
+    ...mapGetters(['isLoggedIn']),
     getStoreUserID() {
       return this.$store.getters.getUserID
     }
@@ -155,35 +156,41 @@ export default {
       if (this.allowRetry) {
         this.$emit('close');
       }
-      else{
+      else {
         this.showAlert();
       }
-      
+
     },
     closeAndSubmit() {
-      let data = {
-        id: this.getStoreUserID,
-        currentScore: this.userPercentage
-      }
-      this.$store.dispatch('submitGame', data)
-        .then(response => {
-          console.log(response);
-          this.$toast.info("Sack Submitted")
-        })
-        .catch(error => {
-          console.log(error);
-          this.$toast.warning("Sack Submission Failed, Log in?")
-        })
+      if (this.isLoggedIn) {
+        let data = {
+          id: this.getStoreUserID,
+          currentScore: this.userPercentage
+        }
+        this.$store.dispatch('submitGame', data)
+          .then(response => {
+            console.log(response);
+            this.$toast.info("Sack Submitted")
+          })
+          .catch(error => {
+            console.log(error);
+            this.$toast.warning("Sack Submission Failed, Log in?")
+          })
 
-      console.log(localStorage.auth_token)
-      this.$store.dispatch('loginUserWithToken2', localStorage.auth_token)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-      this.$emit('submit');
+        console.log(localStorage.auth_token)
+        this.$store.dispatch('loginUserWithToken2', localStorage.auth_token)
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        this.$emit('submit');
+      }
+      else{
+        this.$toast.info("Sack Submitted, Log In to Save!")
+        this.$emit('submit');
+      }
 
     },
     roundPercentage(number) {
@@ -196,6 +203,7 @@ export default {
   },
 };
 import { getWordValue } from '../../public/wordlist/wordgenerator';
+import { mapGetters } from "vuex";
 
 
 </script>
@@ -222,6 +230,15 @@ import { getWordValue } from '../../public/wordlist/wordgenerator';
   overflow-x: auto;
   display: flex;
   flex-direction: column;
+  width: 400px;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 500px;}
 }
 
 .myModal-header,

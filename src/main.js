@@ -23,6 +23,6 @@ if(cookieExists) {
 
 let app = createApp(App);
 directives(app);
-app.use(ToastPlugin);
+app.use(ToastPlugin, {position: 'bottom'});
 app.use(VueClipboard);
 app.use(store).mount('#app')

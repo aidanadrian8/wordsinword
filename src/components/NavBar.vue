@@ -1,9 +1,18 @@
 <template>
   <nav class="navbar navbar-expand-lg border-bottom shadow shadow-lg">
     <div class="container-fluid">
-      <li class="nav-item dropdown-end" style="list-style:none;">
-        <a class="navbar-brand btn" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">WordSack</a>
-        <ul class="dropdown-menu">
+      <li class="dropdown-end" style="list-style:none;">
+        <a class="navbar-brand btn" @click="proTip" role="button" aria-expanded="false">WordSack</a>
+      </li>
+      <button class="navbar-toggler btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-user me-2"></i>Account</a>
+        <ul class="dropdown-menu ms-2">
           <div v-if="!isLoggedIn">
             <li><a class="dropdown-item" @click="showSignInModal">Log In</a></li>
             <li>
@@ -21,19 +30,13 @@
             
           </div>
         </ul>
-      </li>
-      <button class="navbar-toggler btn" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <ToolTip class="nav-link" tooltip="1:A,E,I,O,U,L,N,S,T,R 2:D,G 3:B,C,M,P 4:F,H,V,W,Y 5:K 8:J,X 10:Q,Z"
-              position="bottom"><i class="fa-solid fa-circle-info"></i></ToolTip>
           </li>
           <li class="nav-item">
-            <ToolTip class="nav-link" position="bottom" tooltip="Help" @click="showHelpModal"><i class="fa-solid fa-circle-question"></i>
+            <ToolTip class="nav-link" tooltip="1:A,E,I,O,U,L,N,S,T,R 2:D,G 3:B,C,M,P 4:F,H,V,W,Y 5:K 8:J,X 10:Q,Z"
+              position="bottom"><i class="fa-solid fa-circle-info me-2"></i>Letter Values</ToolTip>
+          </li>
+          <li class="nav-item">
+            <ToolTip class="nav-link" position="bottom" tooltip="Help" @click="showHelpModal"><i class="fa-solid fa-circle-question me-2"></i>Help
             </ToolTip>
           </li>
         </ul>
@@ -91,6 +94,9 @@ export default {
     },
     signInSuccessful() {
 
+    },
+    proTip(){
+      this.$toast.info('ProTip! Make shorter words with higher value letters!')
     },
     setWordLength(value){
       this.$emit('wordLength', value)

@@ -8,7 +8,7 @@
             </header>
             <section class="myModal-body">
                 <p style="color: red" v-show="displaySignUpFailed">Sign up Failed</p>
-                <form action="post" class="text-start">
+                <form @submit="onSignUp" class="text-start" id="signup">
                     <label for="email" class="form-label">
                         Email
                     </label>
@@ -30,7 +30,7 @@
                     <button type="button" class="btn" @click="showSignIn">
                         Log In
                     </button>
-                    <button type="button" class="btn" @click="onSignUp">
+                    <button type="submit" class="btn" form="signup">
                         Sign Up
                     </button>
 
@@ -121,6 +121,14 @@ export default {
     display: flex;
     flex-direction: column;
     width: 300px;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 500px;}
 }
 
 .myModal-header,

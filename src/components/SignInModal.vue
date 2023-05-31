@@ -8,7 +8,7 @@
             </header>
             <section class="myModal-body">
                 <p style="color: red" v-show="displayLoginFailed">Login Failed</p>
-                <form action="post" class="text-start">
+                <form @submit="onLogin" class="text-start" id="login">
                     <label for="email" class="form-label">
                         Email
                     </label>
@@ -24,7 +24,7 @@
                     <button type="button" class="btn" @click="showSignUp">
                         Sign Up
                     </button>
-                    <button type="button" class="btn" @click="onLogin">
+                    <button type="submit" class="btn" form="login">
                         Log In
                     </button>
                 </div>
@@ -56,6 +56,7 @@ export default {
             this.$emit('close');
         },
         showSignUp() {
+            this.resetData();
             this.$emit('showSignUp');
         },
         onLogin(event) {
@@ -76,7 +77,7 @@ export default {
             })
             .catch(error => {
                 console.log(error)
-                this.displayLoginFailed = true
+                this.$toast.warning("Login Failed!")
             })
         },
         resetData() {
@@ -112,6 +113,14 @@ export default {
     display: flex;
     flex-direction: column;
     width: 300px;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 500px;}
 }
 
 .myModal-header,

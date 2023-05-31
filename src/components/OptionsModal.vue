@@ -74,7 +74,15 @@ export default {
     overflow-x: auto;
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 400px;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 520px;}
 }
 
 .myModal-header,

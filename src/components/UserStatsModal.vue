@@ -8,7 +8,7 @@
             </header>
             <section class="myModal-body">
                 <div v-if="isLoggedIn">
-                    <p>Email: {{ this.getUserEmail }}</p>
+                    <h3><i class="fa-solid fa-books"></i> {{ this.getUserEmail.split('@')[0] }}</h3>
                     <table class="table">
                         <thead>
                             <tr>
@@ -119,6 +119,14 @@ export default {
     display: flex;
     flex-direction: column;
     width: 300px;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .myModal {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .myModal {width: 500px;}
 }
 
 .myModal-header,

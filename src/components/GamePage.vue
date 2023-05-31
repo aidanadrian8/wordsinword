@@ -3,38 +3,40 @@
     <div class="header mt-5">
       <h1 id="masterWordHeading" ref="masterWordHeading" v-html="masterHeading"></h1>
     </div>
-    <div style="width:400px; margin:auto;">
-      <div class="form-group">
-        <input type="text" ref="wordInput" v-model="currentTyped" onkeydown="return /[a-z]/i.test(event.key)"
-          @keyup.enter="onPressEnter" class="form-control" placeholder="Make a word from the word above!" autofocus>
+    <div class="gameContainer">
+      <div style=" margin:auto;">
+        <div class="form-group">
+          <input  type="text" ref="wordInput" v-model="currentTyped" onkeydown="return /[a-z]/i.test(event.key)"
+            @keyup.enter="onPressEnter" class="form-control typer" placeholder="Make a word from the word above!" autofocus>
+        </div>
       </div>
-    </div>
-    <div class="text-start ms-auto me-auto mt-5" style="width:400px;">
-      <small class="form-text text-muted float-start">Your Sack Value: {{ sackValue }} </small>
-      <small class="form-text text-muted float-end">
-        Letters Left: {{ this.sackWeightLimit - (this.calculateSackWeight() + this.currentTyped.length) }}
-      </small>
-      <div class="progress mb-3" style="clear:both;">
-        <div ref="progressBar" class="progress-bar" role="progressbar" v-bind:style="{ width: progressBarValue + '%' }"
-          v-bind:aria-valuenow="progressBarValue" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
+      <div class="text-start ms-auto me-auto mt-5" style="">
+        <small class="form-text text-muted float-start">Your Sack Value: {{ sackValue }} </small>
+        <small class="form-text text-muted float-end">
+          Letters Left: {{ this.sackWeightLimit - (this.calculateSackWeight() + this.currentTyped.length) }}
+        </small>
+        <div class="progress mb-3" style="clear:both;">
+          <div ref="progressBar" class="progress-bar" role="progressbar" v-bind:style="{ width: progressBarValue + '%' }"
+            v-bind:aria-valuenow="progressBarValue" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
 
-    </div>
-    <div class="card text-start p-2"
-      style="width:400px; margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
-      <div class="row" style="overflow-y: scroll;">
-        <div class="col-6 mb-1 sackWord" v-for="word in this.sackStorage" :key="word">
-          {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)"
-            class="btn btn-light btn-sm float-end">X</span></div>
       </div>
-    </div>
-    <button class="btn mt-2 mb-5" style="width:400px" @click="submitSack">
-      Submit Sack
-    </button>
-    <div class="container mt-5" style="width:400px">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-secondary" @click="newMasterWord">New Word</button>
-        <button type="button" class="btn btn-secondary" @click="showStatsModal">Show Stats</button>
+      <div class="card text-start p-2" style=" margin:auto; min-height: 40px; max-height: 120px; overflow:hidden">
+        <div class="row" style="overflow-y: scroll;">
+          <div class="col-6 mb-1 sackWord text-muted" v-if="this.sackStorage.length == 0">Sack Storage</div>
+          <div class="col-6 mb-1 sackWord" v-else v-for="word in this.sackStorage" :key="word">
+            {{ word }} - {{ getWordValue(word) }} <span @click="removeWordFromSack(word)"
+              class="btn btn-light btn-sm float-end">X</span></div>
+        </div>
+      </div>
+      <button class="btn mt-2 mb-5 w-100" @click="submitSack">
+        Submit Sack
+      </button>
+      <div class="container mt-5" style="">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary" @click="newMasterWord">New Word</button>
+          <button type="button" class="btn btn-secondary" @click="showStatsModal">Show Stats</button>
+        </div>
       </div>
     </div>
   </div>
@@ -243,7 +245,7 @@ export default {
         this.showResultsModal()
         // console.log(wordgenerator.getBestKnapSack(this.sackWeightLimit, wordgenerator.getWordListFromMaster(this.masterWord)))
       }
-      else{
+      else {
         this.$toast.clear()
         this.$toast.info("Fill up your sack some more!");
       }
@@ -269,11 +271,26 @@ html {
   hyphens: auto;
 }
 
-@media (max-width: 700px) {
+.gameContainer{
+  width: 400px;
+  margin: auto;
+}
+@media only screen 
+   and (min-width : 320px) {
+   .gameContainer {width: 94%; margin: auto;}
+}
+@media only screen 
+   and (min-width : 768px) {
+   .gameContainer {width: 600px;}
+}
+
+@media (max-width: 800px) {
   .header {
     font-size: 14px;
   }
 }
+
+.typer::placeholder {text-align: center;}
 
 .shaker {
   animation: shake 0.2s;
